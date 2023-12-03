@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductComponent } from '../../components/product/product.component'
-import { Product } from '../../../shared/models/product.model';
-import { HeaderComponent } from '../../../shared/components/header/header.component';
+import { Product } from '@shared/models/product.model';
+import { HeaderComponent } from '@shared/components/header/header.component';
+import { CartService } from '@shared/services/cart.service';
+import { ProductService } from '@shared/services/product.service';
 
 @Component({
   selector: 'app-list',
@@ -13,59 +15,24 @@ import { HeaderComponent } from '../../../shared/components/header/header.compon
 })
 export class ListComponent {
 
-  products =signal<Product[]>([]);
-
-  constructor() {
-    const initPorducts:Product[] = [
-      {
-        id: Date.now(),
-        title: 'Pro 1',
-        price: 1000,
-        image: 'https://picsum.photos/640/640?r=23',
-        creationAt: new Date().toISOString()
-      },
-      {
-        id: Date.now(),
-        title: 'Pro 2',
-        price: 2000,
-        image: 'https://picsum.photos/640/640?r=12',
-        creationAt: new Date().toISOString()
-      },
-      {
-        id: Date.now(),
-        title: 'Pro 1',
-        price: 1000,
-        image: 'https://picsum.photos/640/640?r=23',
-        creationAt: new Date().toISOString()
-      },
-      {
-        id: Date.now(),
-        title: 'Pro 2',
-        price: 2000,
-        image: 'https://picsum.photos/640/640?r=12',
-        creationAt: new Date().toISOString()
-      },
-      {
-        id: Date.now(),
-        title: 'Pro 1',
-        price: 1000,
-        image: 'https://picsum.photos/640/640?r=23',
-        creationAt: new Date().toISOString()
-      },
-      {
-        id: Date.now(),
-        title: 'Pro 2',
-        price: 2000,
-        image: 'https://picsum.photos/640/640?r=12',
-        creationAt: new Date().toISOString()
-      }
-    ];
-    this.products.set(initPorducts)
-  }
+  products = signal<Product[]>([]);
+  private cartService = inject(CartService);
+  private productService = inject(ProductService);
   
-  fromChild(event:string) {
-    console.log('estamos desde el padre')
-    console.log(event);
-    
+  ngOnInit(){
+    this.productService.getProducts()
+      .subscribe({
+        next: (products) => {
+          this.products.set(products);
+        },
+        error: () => {
+
+        }
+      })
   }
+
+  addToCart(product:Product) {
+    this.cartService.addToCart(product)    
+  }
+
 }

@@ -4,7 +4,7 @@
     @for (item of products(); track item; let i = $index) {
       <app-product
       [product]="item"
-      (addToCart)="fromChild($event)" />
+      (addToCart)="addToCart($event)" />
     }
   </div>
 </div>
