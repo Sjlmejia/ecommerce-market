@@ -13,6 +13,7 @@ export class ProductService {
 
   getProducts(category_id?: string) {
     const url = new URL('https://api.escuelajs.co/api/v1/products');
+    console.log(url);
     if(category_id) {
       url.searchParams.set('categoryId', category_id);
     }
